@@ -30,4 +30,4 @@ while True:
                         clk_prev  = 1
                         
         print('Encoder pulses = ', encode_count)
-        sleep(1)
+        sleep(.3)
