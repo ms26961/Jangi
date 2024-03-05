@@ -3,9 +3,9 @@ import RPi.GPIO as GPIO
 from time import sleep
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
-CLK = 17
-DT = 27
-SW = 22
+CLK = 18
+DT = 24
+SW = 23
 GPIO.setup(CLK, GPIO.IN,pull_up_down=GPIO.PUD_UP)
 GPIO.setup(DT, GPIO.IN,pull_up_down=GPIO.PUD_UP)
 GPIO.setup(SW, GPIO.IN,pull_up_down=GPIO.PUD_UP)
