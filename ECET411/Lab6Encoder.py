@@ -28,4 +28,6 @@ while True:
                         clk_prev = 0
                 else:
                         clk_prev  = 1
+                        
         print('Encoder pulses = ', encode_count)
+        sleep(1)
