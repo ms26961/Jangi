@@ -100,7 +100,15 @@ try:
         main()
         while True:
 
-                lcd_text("HELLO WORD!",LCD_LINE_1)
+#                lcd_text("HELLO WORD!",LCD_LINE_1)
+ #               time.sleep(2)
+                studentName = str(input('Enter Student Name: '))
+                className = str(input('Enter Class Name: '))
+                lcd_text('WLCOME TO: ', LCD_LINE_1)
+                lcd_text( className, LCD_LINE_2)
+                time.sleep(2)
+                lcd_text('Studnet Name: ', LCD_LINE_1)
+                lcd_text( studentName, LCD_LINE_2)
                 time.sleep(2)
 
 
