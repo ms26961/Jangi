@@ -1,5 +1,4 @@
 import RPi.GPIO as GPIO
-from time import sleep
 from tkinter import *
 
 GPIO.setwarnings(False)
@@ -25,7 +24,7 @@ def greenClick():
         greenLabel.config(text="Green LED OFF", bg="green")
         GPIO.output(LED, GPIO.LOW)  # Turn Off
 
-greenLedButton = Button(root, text="GREEN", command=greenClick, padx=10, pady=0, fg="white", bg="green")
+greenLedButton = Button(root, text="GREEN", command=greenClick, padx=20, pady=10, fg="white", bg="green")
 greenLedButton.grid(row=3, column=5)
 
 greenLabel = Label(root, text="Green LED OFF", fg="white", bg="green")
