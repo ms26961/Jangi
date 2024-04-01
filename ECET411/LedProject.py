@@ -24,7 +24,7 @@ def greenClick():
         greenLabel.config(text="Green LED OFF", bg="green")
         GPIO.output(LED, GPIO.LOW)  # Turn Off
 
-greenLedButton = Button(root, text="GREEN", command=greenClick, padx=200, pady=150, fg="white", bg="green")
+greenLedButton = Button(root, text="GREEN", command=greenClick, padx=2000, pady=1500, fg="white", bg="green")
 greenLedButton.grid(row=3, column=5)
 
 greenLabel = Label(root, text="Green LED OFF", fg="white", bg="green")
