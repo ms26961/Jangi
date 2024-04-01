@@ -4,7 +4,8 @@ GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BCM) # Use physical pin numbering
 LED = 21
 GPIO.setup(LED, GPIO.OUT, inial=GPIO.LOW) # Set pin 21 to be an output pin
-from tkinter import* root = Tk()
+from tkinter import * 
+root = Tk()
 root.title("LED Project")
 root.geometry('600x400')
 Count = 0
