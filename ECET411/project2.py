@@ -58,24 +58,27 @@ root = tk.Tk()
 root.title("Piano")
 
 # Define notes and their frequencies for two octaves
-notes = ["C-", "D", "E", "F", "G", "A", "B", "C", "D", "E", "F", "G", "A", "B", "C+"]
-frequencies = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 555.28, 591.25, 610.85, 653.62,701.62, 755.5, 784.87]
+white_notes = ["C-", "D", "E", "F", "G", "A", "B", "C", "D", "E", "F", "G", "A", "B", "C+"]
+white_frequencies = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50]
+
+# Define Black Keys
+black_notes = ["C#", "D#", "", "F#", "G#", "A#", "", "C#", "D#", "", "F#", "G#", "A#"]
+black_frequencies = [277.18, 311.13, 0, 369.99, 415.30, 466.16, 0, 554.37, 622.25, 0, 739.99, 830.61, 932.33]
 
 # Define White Keys
 keys = []
-for i, (note, freq) in enumerate(zip(notes, frequencies)):
+for i, (note, freq) in enumerate(zip(white_notes, white_frequencies)):
     button = tk.Button(root, text=note, padx=20, pady=80, fg="black", bg="white",
                        command=lambda note=note, freq=freq: key_pressed(note, freq))
     button.grid(row=1, column=i*2, columnspan=2)
     keys.append(button)
 
 # Define Black Keys
-black_keys = ["C#", "D#", "", "F#", "G#", "A#", "", "C#", "D#", "", "F#", "G#", "A#"]
-for i, note in enumerate(black_keys):
+for i, note in enumerate(black_notes):
     if note == "":
         continue  # Skip empty column
     button = tk.Button(root, text=note, padx=15, pady=40, fg="white", bg="black",
-                       command=lambda note=note, freq=(frequencies[i]+15): key_pressed(note, freq))
+                       command=lambda note=note, freq=black_frequencies[i]: key_pressed(note, freq))
     # If the note is F# or G#, place it after the first black key, otherwise after A#
     if note in ("F#", "G#"):
         button.grid(row=0, column=2*(i+1), sticky="nsew")
