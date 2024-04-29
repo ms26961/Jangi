@@ -3,12 +3,12 @@ import RPi.GPIO as GPIO
 import time
 
 # GPIO Pins for RGB LED
-red_pin = 2
-green_pin = 3
-blue_pin = 4
+red_pin = 5
+green_pin = 22
+blue_pin = 27
 
 # GPIO Pin for Buzzer
-Buzzer_pin = 18
+Buzzer_pin = 26
 
 # Function to initialize GPIO
 def setup_gpio():
