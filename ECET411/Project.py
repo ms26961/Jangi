@@ -75,7 +75,7 @@ for i, note in enumerate(black_keys):
     if note == "":
         continue  # Skip empty column
     button = tk.Button(root, text=note, padx=15, pady=40, fg="white", bg="black",
-                       command=lambda note=note, freq=frequencies[i+1]: key_pressed(note, freq))
+                       command=lambda note=note, freq=(frequencies[i]+15): key_pressed(note, freq))
     # If the note is F# or G#, place it after the first black key, otherwise after A#
     if note in ("F#", "G#"):
         button.grid(row=0, column=2*(i+1), sticky="nsew")
