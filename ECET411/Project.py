@@ -69,11 +69,14 @@ for i, (note, freq) in enumerate(zip(notes, frequencies)):
     button.grid(row=1, column=i*2, columnspan=2)
     keys.append(button)
 
-# Define Black Keys (not functional yet)
 black_keys = ["C#", "D#", "F#", "G#", "A#"]
 for i, note in enumerate(black_keys):
-    button = tk.Button(root, text=note, padx=15, pady=40, fg="white", bg="black")
-    button.grid(row=0, column=i*3+2, sticky="nsew")
+    if i < len(black_keys) - 1:  # Check if it's not the last black key
+        button = tk.Button(root, text=note, padx=15, pady=40, fg="white", bg="black")
+        button.grid(row=0, column=i*3+2, sticky="nsew")
+    else:  # If it's the last black key, place it after "G#"
+        button = tk.Button(root, text=note, padx=15, pady=40, fg="white", bg="black")
+        button.grid(row=0, column=(i-1)*3+5, sticky="nsew")
 
 # Setup GPIO
 setup_gpio()
