@@ -66,7 +66,7 @@ keys = []
 for i, (note, freq) in enumerate(zip(notes, frequencies)):
     button = tk.Button(root, text=note, padx=20, pady=80, fg="black", bg="white",
                        command=lambda note=note, freq=freq: key_pressed(note, freq))
-    button.grid(row=1, column=i)
+    button.grid(row=1, column=i*2, columnspan=2)  # Changed columnspan to 2
     keys.append(button)
 
 # Define Black Keys (not functional yet)
