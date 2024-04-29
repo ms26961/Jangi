@@ -58,8 +58,8 @@ root = tk.Tk()
 root.title("Piano")
 
 # Define notes and their frequencies for two octaves
-notes = ["loC", "D", "E", "F", "G", "A", "B", "hiC", "loC", "D", "E", "F", "G", "A", "B", "hiC"]
-frequencies = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 523.25*2, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50]
+notes = ["loC", "D", "E", "F", "G", "A", "B", "C", "D", "E", "F", "G", "A", "B", "hiC"]
+frequencies = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50]
 
 # Define White Keys
 keys = []
@@ -70,7 +70,7 @@ for i, (note, freq) in enumerate(zip(notes, frequencies)):
     keys.append(button)
 
 # Define Black Keys
-black_keys = ["C#", "D#", "", "F#", "G#", "A#","", "C#", "D#", "", "F#", "G#", "A#"]
+black_keys = ["C#", "D#", "", "F#", "G#", "A#", "", "C#", "D#", "", "F#", "G#", "A#"]
 for i, note in enumerate(black_keys):
     if note == "":
         continue  # Skip empty column
