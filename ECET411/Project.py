@@ -2,6 +2,9 @@ import tkinter as tk
 import RPi.GPIO as GPIO
 import time
 
+GPIO.setwarnings(False)
+
+
 # GPIO Pins for RGB LED
 red_pin = 5
 green_pin = 22
