@@ -58,7 +58,7 @@ root = tk.Tk()
 root.title("Piano")
 
 # Define notes and their frequencies
-notes = ["loC", "D", "E", "F", "G", "A", "B", "hiC"]
+notes = ["C-", "D", "E", "F", "G", "A", "B", "C+"]
 frequencies = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]
 
 # Define White Keys
