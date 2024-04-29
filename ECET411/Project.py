@@ -58,7 +58,7 @@ root = tk.Tk()
 root.title("Piano")
 
 # Define notes and their frequencies
-notes = ["C", "D", "E", "F", "G", "A", "B", "C"]
+notes = ["loC", "D", "E", "F", "G", "A", "B", "hiC"]
 frequencies = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]
 
 # Define White Keys
@@ -69,11 +69,18 @@ for i, (note, freq) in enumerate(zip(notes, frequencies)):
     button.grid(row=1, column=i*2, columnspan=2)
     keys.append(button)
 
-# Define Black Keys (not functional yet)
-black_keys = ["C#", "D#", "F#", "G#", "A#"]
+# Define Black Keys
+black_keys = ["C#", "D#", "", "F#", "G#", "A#"]
 for i, note in enumerate(black_keys):
-    button = tk.Button(root, text=note, padx=15, pady=40, fg="white", bg="black")
-    button.grid(row=0, column=i*3+2, sticky="nsew")
+    if note == "":
+        continue  # Skip empty column
+    button = tk.Button(root, text=note, padx=15, pady=40, fg="white", bg="black",
+                       command=lambda note=note, freq=frequencies[i+1]: key_pressed(note, freq))
+    # If the note is F# or G#, place it after the first black key, otherwise after A#
+    if note in ("F#", "G#"):
+        button.grid(row=0, column=2*(i+1), sticky="nsew")
+    else:
+        button.grid(row=0, column=2*(i+1) + 1, sticky="nsew")
 
 # Setup GPIO
 setup_gpio()
