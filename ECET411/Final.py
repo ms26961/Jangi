@@ -74,14 +74,14 @@ note_colors = {
     "G": (0, 0, 255),     # Blue
     "A": (128, 0, 128),   # Purple
     "B": (75, 0, 130),    # Indigo
-    "C+": (255, 0, 0),    # Red (Second Octet)
+    "C": (255, 0, 0),    # Red (Second Octet)
     "D+": (255, 165, 0),  # Orange (Second Octet)
     "E+": (255, 255, 0),  # Yellow (Second Octet)
     "F+": (0, 255, 0),    # Green (Second Octet)
     "G+": (0, 0, 255),    # Blue (Second Octet)
     "A+": (128, 0, 128),  # Purple (Second Octet)
     "B+": (75, 0, 130),   # Indigo (Second Octet)
-    "C++": (255, 0, 0)    # Red (Third Octet)
+    "C+": (255, 0, 0)    # Red (Third Octet)
 }
 
 
