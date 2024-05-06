@@ -57,6 +57,7 @@ def key_pressed(note, frequency):
     output = "Key pressed: " + note
     print(output)
     lcd_text(output, LCD_LINE_1)
+    lcd_text("Frequency: {:.2f}".format(frequency), LCD_LINE_2)
     play_sound(frequency)
     # Calculate color based on note
     color = calculate_color(note)
