@@ -78,8 +78,10 @@ note_colors = {
     "F+": (0, 255, 0),    # Green (Second Octet)
     "G+": (0, 0, 255),    # Blue (Second Octet)
     "A+": (128, 0, 128),  # Purple (Second Octet)
-    "B+": (75, 0, 130)    # Indigo (Second Octet)
+    "B+": (75, 0, 130),   # Indigo (Second Octet)
+    "C++": (255, 0, 0)    # Red (Third Octet)
 }
+
 
 # Function to calculate color based on note
 def calculate_color(note):
