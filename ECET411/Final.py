@@ -62,6 +62,8 @@ def key_pressed(note, frequency):
     color = calculate_color(note)
     # Set RGB LED color
     set_rgb_color(color)
+     # Output to LCD
+    lcd_text(output, LCD_LINE_1)
 
 # Define color mappings for notes
 note_colors = {
