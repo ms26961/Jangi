@@ -12,18 +12,18 @@ Buzzer_pin = 26
 
 # GPIO to LCD mapping
 LCD_RS = 21
-LCD_E  = 20
+LCD_E = 20
 LCD_D4 = 25
 LCD_D5 = 24
 LCD_D6 = 23
 LCD_D7 = 18
 
 # Device constants
-LCD_CHR = True    # Character mode
-LCD_CMD = False   # Command mode
-LCD_CHARS = 16    # Characters per line (16 max)
-LCD_LINE_1 = 0x80 # LCD memory location for 1st line
-LCD_LINE_2 = 0xC0 # LCD memory location 2nd line
+LCD_CHR = True  # Character mode
+LCD_CMD = False  # Command mode
+LCD_CHARS = 16  # Characters per line (16 max)
+LCD_LINE_1 = 0x80  # LCD memory location for 1st line
+LCD_LINE_2 = 0xC0  # LCD memory location 2nd line
 
 # Function to initialize GPIO
 def setup_gpio():
@@ -33,7 +33,7 @@ def setup_gpio():
         GPIO.setup(red_pin, GPIO.OUT)
         GPIO.setup(green_pin, GPIO.OUT)
         GPIO.setup(blue_pin, GPIO.OUT)
-        
+
         # Setup LCD GPIO
         GPIO.setup(LCD_E, GPIO.OUT)
         GPIO.setup(LCD_RS, GPIO.OUT)
@@ -62,8 +62,6 @@ def key_pressed(note, frequency):
     color = calculate_color(note)
     # Set RGB LED color
     set_rgb_color(color)
-    # Output to LCD
-    lcd_text(output, LCD_LINE_1)
 
 # Define color mappings for notes
 note_colors = {
@@ -80,7 +78,7 @@ note_colors = {
     "F+": (0, 255, 0),    # Green (Second Octet)
     "G+": (0, 0, 255),    # Blue (Second Octet)
     "A+": (128, 0, 128),  # Purple (Second Octet)
-    "B+": (75, 0, 130),   # Indigo (Second Octet)
+    "B+": (75, 0, 130),    # Indigo (Second Octet)
     "C++": (255, 0, 0)    # Red (Third Octet)
 }
 
@@ -97,13 +95,13 @@ def set_rgb_color(color):
 
 # Function to initialize LCD
 def lcd_init():
-    lcd_write(0x33, LCD_CMD)  # Initialize
-    lcd_write(0x32, LCD_CMD)  # Set to 4-bit mode
-    lcd_write(0x06, LCD_CMD)  # Cursor move direction
-    lcd_write(0x0C, LCD_CMD)  # Turn cursor off
-    lcd_write(0x28, LCD_CMD)  # 2 line display
-    lcd_write(0x01, LCD_CMD)  # Clear display
-    time.sleep(0.1)  # Delay to allow commands to process
+    lcd_write(0x33, LCD_CMD) # Initialize
+    lcd_write(0x32, LCD_CMD) # Set to 4-bit mode
+    lcd_write(0x06, LCD_CMD) # Cursor move direction
+    lcd_write(0x0C, LCD_CMD) # Turn cursor off
+    lcd_write(0x28, LCD_CMD) # 2 line display
+    lcd_write(0x01, LCD_CMD) # Clear display
+    time.sleep(0.0005)     # Delay to allow commands to process
 
 # Function to write to LCD
 def lcd_write(bits, mode):
