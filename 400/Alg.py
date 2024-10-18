@@ -1,66 +1,43 @@
 import serial
 import time
+import random
 
-# Number of encryption keys to generate
-NUM_KEYS = 32
+# Open the serial port to read the data from the Arduino
+ser = serial.Serial('/dev/ttyUSB0', 9600)  # Adjust based on your setup
+time.sleep(2)  # Wait for the connection to stabilize
 
-# Open the serial port where the Arduino is connected
-ser = serial.Serial('/dev/ttyUSB0', 9600)  # Replace with your serial port
-time.sleep(2)  # Wait for the connection to be established
+# Define the alphanumeric characters (62 characters: 26 lowercase, 26 uppercase, 10 digits)
+alphanumeric_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
-# Function to convert sensor values to bits based on threshold
-def ldr_to_bits(ldr_values, threshold=512):
-    bits = []
+def generate_encryption_key(ldr_values):
+    key = ''
+    
+    # Scale the LDR values and convert to alphanumeric characters
     for value in ldr_values:
-        if value > threshold:
-            bits.append(1)
-        else:
-            bits.append(0)
-    return bits
+        # Normalize the LDR value to the range 0-61 to match the index of alphanumeric_chars
+        normalized_value = value % 62
+        # Append the corresponding character from alphanumeric_chars
+        key += alphanumeric_chars[normalized_value]
+    
+    # Repeat the process until the key has 32 characters
+    while len(key) < 32:
+        # Randomly pick more values from the existing LDR data
+        random_value = random.choice(ldr_values) % 62
+        key += alphanumeric_chars[random_value]
+    
+    return key
 
-# Function to generate 32-bit encryption keys
-def generate_encryption_keys(num_keys):
-    encryption_keys = []
-    bit_pool = []
-
-    while len(encryption_keys) < num_keys:
-        if ser.in_waiting > 0:
-            # Read a line from the serial port
-            ldr_data = ser.readline().decode('utf-8').strip()  # Read and decode the incoming data
-            
-            # Split the comma-separated values into a list
-            ldr_values = ldr_data.split(',')
-            
-            # Convert the string values into integers
-            ldr_values = [int(value) for value in ldr_values]
-            
-            # Convert LDR values to bits (0 or 1)
-            bits = ldr_to_bits(ldr_values)
-            
-            # Append the bits to the bit pool
-            bit_pool.extend(bits)
-
-            # Check if we have enough bits to form a 32-bit key
-            while len(bit_pool) >= 32:
-                # Take the first 32 bits from the bit pool
-                key_bits = bit_pool[:32]
-                
-                # Remove the used bits from the pool
-                bit_pool = bit_pool[32:]
-                
-                # Convert the bits into an integer (encryption key)
-                key = int(''.join(map(str, key_bits)), 2)
-                
-                # Append the key to the encryption keys list
-                encryption_keys.append(key)
-                print(f"Generated key {len(encryption_keys)}: {key}")
-
-    return encryption_keys
-
-# Generate 32 encryption keys
-keys = generate_encryption_keys(NUM_KEYS)
-
-# Print the final list of keys
-print("Final 32 Encryption Keys:")
-for i, key in enumerate(keys):
-    print(f"Key {i+1}: {key}")
+# Main loop to receive data and generate encryption keys
+while True:
+    if ser.in_waiting > 0:
+        # Read the comma-separated LDR values from Arduino
+        ldr_data = ser.readline().decode('utf-8').strip()
+        ldr_values = [int(value) for value in ldr_data.split(',')]
+        
+        # Generate a 32-character alphanumeric key
+        encryption_key = generate_encryption_key(ldr_values)
+        print(f"Generated Encryption Key: {encryption_key}")
+        
+        # Optional: Save or process the key as needed
+        
+    time.sleep(0.1)  # Small delay to avoid overwhelming the serial buffer
