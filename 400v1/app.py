@@ -13,7 +13,7 @@ alphanumeric_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
 # Serial port setup for Arduino
 # Update the port based on your system
-ser = serial.Serial('/dev/ttyUSB0', 9600)
+ser = serial.Serial('/dev/ttyACM0', 9600)
 time.sleep(2)  # Wait for the serial connection to initialize
 
 # Function to read LDR values from Arduino
