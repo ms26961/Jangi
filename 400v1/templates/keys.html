@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Keys</title>
+</head>
+<body>
+    <h1>Generated {{ num_keys }} Encryption Keys</h1>
+    <ul>
+        {% for key in keys %}
+            <li>{{ key }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Download Keys</h2>
+    <a href="/download_csv?num_keys={{ num_keys }}">Download as CSV</a> |
+    <a href="/download_pdf?num_keys={{ num_keys }}">Download as PDF</a>
+</body>
+</html>
