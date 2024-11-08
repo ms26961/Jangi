@@ -11,7 +11,7 @@ app = Flask(__name__)
 alphanumeric_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
 # Serial port setup for Arduino
-ser = serial.Serial('/dev/ttyUSB0', 9600)
+ser = serial.Serial('/dev/ttyACM0', 9600)
 time.sleep(2)  # Wait for the serial connection to initialize
 
 # Function to read LDR values from Arduino
