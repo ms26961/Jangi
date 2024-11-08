@@ -1,1 +1,16 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Encryption Keys</title>
+</head>
+<body>
+    <h1>Generate Encryption Keys</h1>
+    <form action="/generate" method="post">
+        <label for="num_keys">Number of Keys:</label>
+        <input type="number" id="num_keys" name="num_keys" min="1" value="1" required>
+        <button type="submit">Generate Keys</button>
+    </form>
+</body>
+</html>
