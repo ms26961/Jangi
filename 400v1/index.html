@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRNG Web Interface</title>
+</head>
+<body>
+    <h1>Generate Encryption Keys</h1>
+    <form action="/generate" method="post">
+        <label for="num_keys">Number of Keys:</label>
+        <input type="number" id="num_keys" name="num_keys" min="1" value="1" required>
+        <button type="submit">Generate Keys</button>
+    </form>
+    
+    <h2>LDR Self-Test</h2>
+    <a href="/self_test"><button>Run LDR Self-Test</button></a>
+</body>
+</html>
