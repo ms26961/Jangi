@@ -3,7 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generate Encryption Keys</title>
+    <title>TRNG Web Interface</title>
+    <script>
+        // JavaScript function to run self-test and display results
+        function runSelfTest() {
+            fetch('/run_self_test', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Clear any existing results
+                const resultsDiv = document.getElementById('testResults');
+                resultsDiv.innerHTML = '';
+
+                // Display results in a table format
+                let resultTable = '<table border="1"><tr><th>Sensor ID</th><th>Value</th><th>Status</th></tr>';
+                data.forEach(result => {
+                    resultTable += `<tr>
+                        <td>${result["Sensor ID"]}</td>
+                        <td>${result["Value"]}</td>
+                        <td>${result["Status"]}</td>
+                    </tr>`;
+                });
+                resultTable += '</table>';
+
+                resultsDiv.innerHTML = resultTable;
+            })
+            .catch(error => {
+                console.error('Error running self-test:', error);
+            });
+        }
+    </script>
 </head>
 <body>
     <h1>Generate Encryption Keys</h1>
@@ -12,5 +42,13 @@
         <input type="number" id="num_keys" name="num_keys" min="1" value="1" required>
         <button type="submit">Generate Keys</button>
     </form>
+    
+    <h2>LDR Self-Test</h2>
+    <button onclick="runSelfTest()">Run LDR Self-Test</button>
+    
+    <!-- Section to display self-test results -->
+    <div id="testResults">
+        <!-- Results will be displayed here -->
+    </div>
 </body>
 </html>
