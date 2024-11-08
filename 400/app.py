@@ -14,7 +14,7 @@ alphanumeric_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
 # Serial port to communicate with Arduino
 # Replace '/dev/ttyUSB0' with the correct port on your system (can also be /dev/ttyACM0)
-ser = serial.Serial('/dev/ttyUSB0', 9600)
+ser = serial.Serial('/dev/ttyACM0', 9600)
 time.sleep(2)  # Wait for the serial connection to initialize
 
 # Generate a 32-character alphanumeric encryption key from LDR data
