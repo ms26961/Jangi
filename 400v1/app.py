@@ -14,19 +14,34 @@ try:
     time.sleep(2)  # Wait for the serial connection to initialize
 except serial.SerialException:
     ser = None  # Handle the case where the Arduino is not connected
+    print("Warning: Arduino not connected or serial port unavailable.")
 
 # Function to read LDR values from Arduino
 def get_ldr_values():
     if ser and ser.in_waiting > 0:
-        ldr_data = ser.readline().decode('utf-8').strip()
         try:
+            # Read and decode the data
+            ldr_data = ser.readline().decode('utf-8').strip()
+            print(f"Raw data from Arduino: {ldr_data}")  # Debug: Log raw data
+            
+            # Convert the data to integers
             ldr_values = [int(value) for value in ldr_data.split(',')]
-            if len(ldr_values) == 64:
-                return ldr_values
+            
+            # Check if we received exactly 64 values
+            if len(ldr_values) != 64:
+                print(f"Error: Expected 64 values, but got {len(ldr_values)}. Data: {ldr_values}")
+                return None  # Return None for incomplete data
+            
+            return ldr_values
         except ValueError:
-            print("Error: Non-integer value received in LDR data")
-    # Return dummy data if Arduino is not connected or data is invalid
-    return [random.randint(0, 1023) for _ in range(64)]
+            print("Error: Non-integer value in data")
+            return None  # Return None for invalid data
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            return None
+    else:
+        print("No data available on serial port")  # Debug: No data received
+        return None
 
 # Function to generate a 32-character encryption key
 def generate_encryption_key(ldr_values):
@@ -46,8 +61,12 @@ def run_self_test():
 
     while time.time() - start_time < 10:  # Run for 10 seconds
         ldr_values = get_ldr_values()
-        for i in range(64):
-            accumulated_values[i].append(ldr_values[i])
+        
+        if ldr_values:  # Only process if valid data is received
+            for i in range(64):
+                accumulated_values[i].append(ldr_values[i])
+        else:
+            print("Skipping invalid or incomplete data")  # Debug: Log skipped data
 
     # Calculate the highest value for each sensor
     results = []
@@ -77,8 +96,11 @@ def generate_keys():
         # Generate the requested number of keys
         for _ in range(num_keys):
             ldr_values = get_ldr_values()
-            key = generate_encryption_key(ldr_values)
-            keys.append(key)
+            if ldr_values:
+                key = generate_encryption_key(ldr_values)
+                keys.append(key)
+            else:
+                keys.append("Error: Invalid LDR data")  # Handle missing data gracefully
 
         # Render the key.html page with generated keys
         return render_template('key.html', num_keys=num_keys, keys=keys)
