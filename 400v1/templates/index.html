@@ -4,51 +4,202 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRNG Web Interface</title>
+    <style>
+        /* General styling */
+        :root {
+            --light-bg: #f4f6f9;
+            --dark-bg: #2c2c2c;
+            --light-text: #333;
+            --dark-text: #e0e0e0;
+            --primary-color: #1e88e5;
+            --accent-color: #4a4e69;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--light-text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 60px 40px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1, h2 {
+            color: var(--accent-color);
+            text-align: center;
+        }
+
+        .dark-mode h1, .dark-mode h2 {
+            color: var(--dark-text);
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 20px;
+        }
+
+        input[type="number"] {
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        .generate-btn {
+            background-color: var(--primary-color);
+            color: white;
+            transition: background-color 0.5s;
+        }
+
+        .generate-btn:hover {
+            background-color: var(--accent-color);
+        }
+
+        .test-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--accent-color);
+            color: white;
+            font-size: 12px;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .test-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        .toggle-btn {
+            position: absolute;
+            top: 0px;
+            left: 20px;
+            background-color: #333;
+            color: white;
+            font-size: 12px;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .toggle-btn:hover {
+            background-color: #555;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            color: inherit;
+            background-color: inherit;
+            transition: color 0.3s, background-color 0.3s;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .dark-mode {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
+        .dark-mode .container {
+            background-color: #3a3a3a;
+        }
+
+        .dark-mode th {
+            background-color: #555;
+        }
+    </style>
     <script>
-        // JavaScript function to run self-test and display results
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
         function runSelfTest() {
-            fetch('/run_self_test', {
-                method: 'POST'
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Clear any existing results
-                const resultsDiv = document.getElementById('testResults');
-                resultsDiv.innerHTML = '';
+            fetch('/run_self_test', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    const resultsDiv = document.getElementById('testResults');
+                    resultsDiv.innerHTML = '';
 
-                // Display results in a table format
-                let resultTable = '<table border="1"><tr><th>Sensor ID</th><th>Value</th><th>Status</th></tr>';
-                data.forEach(result => {
-                    resultTable += `<tr>
-                        <td>${result["Sensor ID"]}</td>
-                        <td>${result["Value"]}</td>
-                        <td>${result["Status"]}</td>
-                    </tr>`;
+                    let resultTable = '<table><tr><th>Sensor ID</th><th>Value</th><th>Status</th></tr>';
+                    data.forEach(result => {
+                        resultTable += `<tr>
+                            <td>${result["Sensor ID"]}</td>
+                            <td>${result["Value"]}</td>
+                            <td>${result["Status"]}</td>
+                        </tr>`;
+                    });
+                    resultTable += '</table>';
+
+                    resultsDiv.innerHTML = resultTable;
+                })
+                .catch(error => {
+                    console.error('Error running self-test:', error);
                 });
-                resultTable += '</table>';
-
-                resultsDiv.innerHTML = resultTable;
-            })
-            .catch(error => {
-                console.error('Error running self-test:', error);
-            });
         }
     </script>
 </head>
 <body>
-    <h1>Generate Encryption Keys</h1>
-    <form action="/generate" method="post">
-        <label for="num_keys">Number of Keys:</label>
-        <input type="number" id="num_keys" name="num_keys" min="1" value="1" required>
-        <button type="submit">Generate Keys</button>
-    </form>
-    
-    <h2>LDR Self-Test</h2>
-    <button onclick="runSelfTest()">Run LDR Self-Test</button>
-    
-    <!-- Section to display self-test results -->
-    <div id="testResults">
-        <!-- Results will be displayed here -->
+    <div class="container">
+        <h1>True Random Number Generator</h1>
+
+        <button class="toggle-btn" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+        <button class="test-btn" onclick="runSelfTest()">Run LDR Self-Test</button>
+
+        <div class="form">
+            <h2>Generate Encryption Keys</h2>
+            <form action="/generate" method="post">
+                <label for="num_keys">Number of Keys:</label>
+                <input type="number" id="num_keys" name="num_keys" min="1" value="1" required>
+                <button type="submit" class="generate-btn">Generate Keys</button>
+            </form>
+        </div>
+
+        <div id="testResults" class="results">
+            <!-- Results will be dynamically displayed here -->
+        </div>
     </div>
 </body>
 </html>
