@@ -15,39 +15,18 @@ try:
 except serial.SerialException:
     ser = None  # Handle the case where the Arduino is not connected
 
+# Function to read LDR values from Arduino
 def get_ldr_values():
     if ser and ser.in_waiting > 0:
+        ldr_data = ser.readline().decode('utf-8').strip()
         try:
-            # Read a line from the serial port
-            ldr_data = ser.readline().decode('utf-8').strip()
-            
-            # Log raw data for debugging
-            print(f"Raw LDR Data: {ldr_data}")
-            
-            # Split the data into a list
-            ldr_values = ldr_data.split(',')
-            
-            # Ensure all values are integers
-            ldr_values = [int(value.strip()) for value in ldr_values]
-            
-            # Validate the number of values
-            if len(ldr_values) != 64:
-                print(f"Warning: Expected 64 values but received {len(ldr_values)}")
-                return [0] * 64  # Return dummy values if data is incomplete
-            
-            return ldr_values  # Return cleaned and validated values
-        
-        except ValueError as e:
-            print(f"Error: Non-integer value received in LDR data: {e}")
-            return [0] * 64  # Return dummy values if parsing fails
-        
-        except Exception as e:
-            print(f"Unexpected error in get_ldr_values(): {e}")
-            return [0] * 64  # Return dummy values for other unexpected errors
-
-    # If no data is available or Arduino is not connected, return dummy values
+            ldr_values = [int(value) for value in ldr_data.split(',')]
+            if len(ldr_values) == 64:
+                return ldr_values
+        except ValueError:
+            print("Error: Non-integer value received in LDR data")
+    # Return dummy data if Arduino is not connected or data is invalid
     return [random.randint(0, 1023) for _ in range(64)]
-
 
 # Function to generate a 32-character encryption key
 def generate_encryption_key(ldr_values):
