@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TRNG Interface</title>
+</head>
+<body>
+    <h1>True Random Number Generator</h1>
+    <form action="/generate" method="post">
+        <label>Number of Keys:</label>
+        <input type="number" name="num_keys" min="1" value="1" required>
+        <label>Output Format:</label>
+        <input type="radio" name="download_format" value="csv" checked> CSV
+        <input type="radio" name="download_format" value="pdf"> PDF
+        <label>
+            <input type="checkbox" name="display"> Display on Web Page
+        </label>
+        <button type="submit">Generate Keys</button>
+    </form>
+    <a href="/self_test">Go to Self-Test Page</a>
+</body>
+</html>
