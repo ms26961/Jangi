@@ -10,15 +10,19 @@
                 .then(data => {
                     const resultsDiv = document.getElementById('results');
                     resultsDiv.innerHTML = '<h2>Self-Test Results</h2>';
-                    let resultTable = '<table><tr><th>Sensor ID</th><th>Max Value</th></tr>';
-                    data.forEach(result => {
-                        resultTable += `<tr>
-                            <td>${result["Sensor ID"]}</td>
-                            <td>${result["Max Value"]}</td>
-                        </tr>`;
+
+                    data.forEach(group => {
+                        let resultTable = `<h3>${group["Multiplexer"]}</h3>`;
+                        resultTable += '<table><tr><th>Sensor ID</th><th>Value</th></tr>';
+                        group["Values"].forEach((value, index) => {
+                            resultTable += `<tr>
+                                <td>${group["Multiplexer"]} - Sensor ${index + 1}</td>
+                                <td>${value}</td>
+                            </tr>`;
+                        });
+                        resultTable += '</table>';
+                        resultsDiv.innerHTML += resultTable;
                     });
-                    resultTable += '</table>';
-                    resultsDiv.innerHTML += resultTable;
                 })
                 .catch(error => {
                     console.error('Error running self-test:', error);
