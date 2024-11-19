@@ -15,6 +15,7 @@ except serial.SerialException:
     ser = None
     print("Warning: Arduino not connected or serial port unavailable.")
 
+# Alphanumeric character set for encryption keys
 alphanumeric_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
 # Function to request and read LDR values from Arduino
@@ -23,7 +24,7 @@ def get_ldr_values():
         try:
             ser.write(b'R')  # Send "R" command to Arduino to request LDR data
             data = ser.readline().decode('utf-8').strip()
-            ldr_values = [int(value) for value in data.split(',') if 1 <= int(value) <= 800]
+            ldr_values = [int(value) for value in data.split(',') if 1 <= int(value) <= 200]
             return ldr_values
         except Exception as e:
             print(f"Error reading from Arduino: {e}")
@@ -46,7 +47,7 @@ def self_test_page():
 @app.route('/run_self_test', methods=['POST'])
 def run_self_test():
     ldr_values = get_ldr_values() or [random.randint(1, 200) for _ in range(64)]
-    valid_values = [value for value in ldr_values if value > 0]  # Filter valid values
+    valid_values = [value for value in ldr_values if value > 0]
 
     # Group into 4 multiplexers with 16 sensors each
     grouped_results = [
@@ -55,7 +56,6 @@ def run_self_test():
     ]
 
     return jsonify(grouped_results)
-
 
 @app.route('/generate', methods=['POST'])
 def generate_keys():
@@ -96,11 +96,16 @@ def download_keys(keys, format):
 def download_self_test():
     ldr_values = get_ldr_values() or [random.randint(1, 200) for _ in range(64)]
     valid_values = [value for value in ldr_values if value > 0]
-    max_values = [max(valid_values[i:i + 16]) for i in range(0, len(valid_values), 16)]
-    results = [{"Sensor ID": f"Sensor {i+1}", "Max Value": max_values[i]} for i in range(len(max_values))]
+
+    # Group into 4 multiplexers
+    grouped_results = [
+        {"Multiplexer": f"Mux {mux + 1}", "Sensor ID": f"Sensor {i + 1}", "Value": valid_values[mux * 16 + i]}
+        for mux in range(4) for i in range(16)
+    ]
+
     format = request.form['download_format']
     if format == 'csv':
-        df = pd.DataFrame(results)
+        df = pd.DataFrame(grouped_results)
         csv_file = 'self_test_results.csv'
         df.to_csv(csv_file, index=False)
         return send_file(csv_file, as_attachment=True)
@@ -108,8 +113,8 @@ def download_self_test():
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", size=12)
-        for result in results:
-            pdf.cell(200, 10, txt=f"{result['Sensor ID']}: {result['Max Value']}", ln=True)
+        for result in grouped_results:
+            pdf.cell(200, 10, txt=f"{result['Multiplexer']} - {result['Sensor ID']}: {result['Value']}", ln=True)
         pdf_file = 'self_test_results.pdf'
         pdf.output(pdf_file)
         return send_file(pdf_file, as_attachment=True)
