@@ -23,7 +23,7 @@ def get_ldr_values():
         try:
             ser.write(b'R')  # Send "R" command to Arduino to request LDR data
             data = ser.readline().decode('utf-8').strip()
-            ldr_values = [int(value) for value in data.split(',') if 1 <= int(value) <= 200]
+            ldr_values = [int(value) for value in data.split(',') if 1 <= int(value) <= 800]
             return ldr_values
         except Exception as e:
             print(f"Error reading from Arduino: {e}")
