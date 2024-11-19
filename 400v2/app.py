@@ -15,7 +15,6 @@ except serial.SerialException:
     ser = None
     print("Warning: Arduino not connected or serial port unavailable.")
 
-# Alphanumeric character set for encryption keys
 alphanumeric_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
 # Function to request and read LDR values from Arduino
@@ -24,10 +23,7 @@ def get_ldr_values():
         try:
             ser.write(b'R')  # Send "R" command to Arduino to request LDR data
             data = ser.readline().decode('utf-8').strip()
-            ldr_values = [int(value) for value in data.split(',')]
-            if len(ldr_values) != 64:
-                print("Incomplete data received.")
-                return None
+            ldr_values = [int(value) for value in data.split(',') if 1 <= int(value) <= 200]
             return ldr_values
         except Exception as e:
             print(f"Error reading from Arduino: {e}")
@@ -36,7 +32,8 @@ def get_ldr_values():
 
 # Function to generate a 32-character encryption key
 def generate_encryption_key(ldr_values):
-    return ''.join(alphanumeric_chars[value % 62] for value in ldr_values[:32])
+    filtered_values = [value for value in ldr_values if value > 0]  # Ignore invalid values
+    return ''.join(alphanumeric_chars[value % 62] for value in filtered_values[:32])
 
 @app.route('/')
 def index():
@@ -48,9 +45,10 @@ def self_test_page():
 
 @app.route('/run_self_test', methods=['POST'])
 def run_self_test():
-    ldr_values = get_ldr_values() or [random.randint(0, 1023) for _ in range(64)]
-    max_values = [max(ldr_values[i:i + 16]) for i in range(0, 64, 16)]
-    results = [{"Sensor ID": f"Sensor {i+1}", "Max Value": max_values[i]} for i in range(4)]
+    ldr_values = get_ldr_values() or [random.randint(1, 200) for _ in range(64)]
+    valid_values = [value for value in ldr_values if value > 0]
+    max_values = [max(valid_values[i:i + 16]) for i in range(0, len(valid_values), 16)]
+    results = [{"Sensor ID": f"Sensor {i+1}", "Max Value": max_values[i]} for i in range(len(max_values))]
     return jsonify(results)
 
 @app.route('/generate', methods=['POST'])
@@ -60,7 +58,7 @@ def generate_keys():
 
     keys = []
     for _ in range(num_keys):
-        ldr_values = get_ldr_values() or [random.randint(0, 1023) for _ in range(64)]
+        ldr_values = get_ldr_values() or [random.randint(1, 200) for _ in range(64)]
         keys.append(generate_encryption_key(ldr_values))
 
     if output_option == 'display':
@@ -90,9 +88,10 @@ def download_keys(keys, format):
 
 @app.route('/download_self_test', methods=['POST'])
 def download_self_test():
-    ldr_values = get_ldr_values() or [random.randint(0, 1023) for _ in range(64)]
-    max_values = [max(ldr_values[i:i + 16]) for i in range(0, 64, 16)]
-    results = [{"Sensor ID": f"Sensor {i+1}", "Max Value": max_values[i]} for i in range(4)]
+    ldr_values = get_ldr_values() or [random.randint(1, 200) for _ in range(64)]
+    valid_values = [value for value in ldr_values if value > 0]
+    max_values = [max(valid_values[i:i + 16]) for i in range(0, len(valid_values), 16)]
+    results = [{"Sensor ID": f"Sensor {i+1}", "Max Value": max_values[i]} for i in range(len(max_values))]
     format = request.form['download_format']
     if format == 'csv':
         df = pd.DataFrame(results)
