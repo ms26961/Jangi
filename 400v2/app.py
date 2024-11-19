@@ -46,10 +46,16 @@ def self_test_page():
 @app.route('/run_self_test', methods=['POST'])
 def run_self_test():
     ldr_values = get_ldr_values() or [random.randint(1, 200) for _ in range(64)]
-    valid_values = [value for value in ldr_values if value > 0]
-    max_values = [max(valid_values[i:i + 16]) for i in range(0, len(valid_values), 16)]
-    results = [{"Sensor ID": f"Sensor {i+1}", "Max Value": max_values[i]} for i in range(len(max_values))]
-    return jsonify(results)
+    valid_values = [value for value in ldr_values if value > 0]  # Filter valid values
+
+    # Group into 4 multiplexers with 16 sensors each
+    grouped_results = [
+        {"Multiplexer": f"Mux {mux + 1}", "Values": valid_values[mux * 16:(mux + 1) * 16]}
+        for mux in range(4)
+    ]
+
+    return jsonify(grouped_results)
+
 
 @app.route('/generate', methods=['POST'])
 def generate_keys():
