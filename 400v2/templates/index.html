@@ -9,12 +9,12 @@
     <form action="/generate" method="post">
         <label>Number of Keys:</label>
         <input type="number" name="num_keys" min="1" value="1" required>
-        <label>Output Format:</label>
-        <input type="radio" name="download_format" value="csv" checked> CSV
-        <input type="radio" name="download_format" value="pdf"> PDF
-        <label>
-            <input type="checkbox" name="display"> Display on Web Page
-        </label>
+
+        <label>Output Option:</label>
+        <input type="radio" name="output_option" value="display" checked> Display on Web Page
+        <input type="radio" name="output_option" value="csv"> Download as CSV
+        <input type="radio" name="output_option" value="pdf"> Download as PDF
+
         <button type="submit">Generate Keys</button>
     </form>
     <a href="/self_test">Go to Self-Test Page</a>
