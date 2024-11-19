@@ -46,7 +46,7 @@ def self_test_page():
 
 @app.route('/run_self_test', methods=['POST'])
 def run_self_test():
-    ldr_values = get_ldr_values() or [random.randint(1, 200) for _ in range(64)]
+    ldr_values = get_ldr_values() 
     valid_values = [value for value in ldr_values if value > 0]
 
     # Group into 4 multiplexers with 16 sensors each
@@ -64,7 +64,7 @@ def generate_keys():
 
     keys = []
     for _ in range(num_keys):
-        ldr_values = get_ldr_values() or [random.randint(1, 200) for _ in range(64)]
+        ldr_values = get_ldr_values()
         keys.append(generate_encryption_key(ldr_values))
 
     if output_option == 'display':
@@ -94,7 +94,7 @@ def download_keys(keys, format):
 
 @app.route('/download_self_test', methods=['POST'])
 def download_self_test():
-    ldr_values = get_ldr_values() or [random.randint(1, 200) for _ in range(64)]
+    ldr_values = get_ldr_values() 
     valid_values = [value for value in ldr_values if value > 0]
 
     # Group into 4 multiplexers
