@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for
+from flask import Flask, render_template, request, jsonify, send_file
 import serial
 import time
 import random
@@ -15,6 +15,7 @@ except serial.SerialException:
     ser = None
     print("Warning: Arduino not connected or serial port unavailable.")
 
+# Alphanumeric character set for encryption keys
 alphanumeric_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
 # Function to request and read LDR values from Arduino
@@ -55,15 +56,21 @@ def run_self_test():
 @app.route('/generate', methods=['POST'])
 def generate_keys():
     num_keys = int(request.form['num_keys'])
-    display_on_page = 'display' in request.form  # Check if user wants to display keys
+    output_option = request.form['output_option']  # Retrieve the user's selected output option
+
     keys = []
     for _ in range(num_keys):
         ldr_values = get_ldr_values() or [random.randint(0, 1023) for _ in range(64)]
         keys.append(generate_encryption_key(ldr_values))
-    if display_on_page:
+
+    if output_option == 'display':
         return render_template('keys.html', keys=keys)
+    elif output_option == 'csv':
+        return download_keys(keys, format='csv')
+    elif output_option == 'pdf':
+        return download_keys(keys, format='pdf')
     else:
-        return download_keys(keys, format=request.form['download_format'])
+        return "Invalid output option selected.", 400
 
 def download_keys(keys, format):
     if format == 'csv':
@@ -104,4 +111,3 @@ def download_self_test():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-
