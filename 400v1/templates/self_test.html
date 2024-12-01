@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Self-Test</title>
+    <script>
+        function runSelfTest() {
+            fetch('/run_self_test', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = '<h2>Self-Test Results</h2>';
+
+                    data.forEach(group => {
+                        let resultTable = `<h3>${group["Multiplexer"]}</h3>`;
+                        resultTable += '<table><tr><th>Sensor ID</th><th>Value</th></tr>';
+                        group["Values"].forEach((value, index) => {
+                            resultTable += `<tr>
+                                <td>${group["Multiplexer"]} - Sensor ${index + 1}</td>
+                                <td>${value}</td>
+                            </tr>`;
+                        });
+                        resultTable += '</table>';
+                        resultsDiv.innerHTML += resultTable;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error running self-test:', error);
+                });
+        }
+    </script>
+</head>
+<body>
+    <h1>Self-Test</h1>
+    <button onclick="runSelfTest()">Run Self-Test</button>
+    <div id="results"></div>
+    <form action="/download_self_test" method="post">
+        <label>Download Format:</label>
+        <input type="radio" name="download_format" value="csv" checked> CSV
+        <input type="radio" name="download_format" value="pdf"> PDF
+        <button type="submit">Download Results</button>
+    </form>
+    <a href="/">Go Back</a>
+</body>
+</html>
