@@ -2,15 +2,164 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Self-Test</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --text-color: #333;
+            --primary-color: #1e88e5;
+            --secondary-color: #005cb2;
+            --card-bg: #ffffff;
+            --table-header-bg: #1e88e5;
+            --table-header-text: #ffffff;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .dark-mode {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --table-header-bg: #333333;
+            --table-header-text: #e0e0e0;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: var(--table-header-bg);
+            color: var(--table-header-text);
+        }
+
+        .form-container {
+            margin-top: 20px;
+        }
+
+        .form-container label {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 15px;
+            font-weight: normal;
+        }
+
+        .form-container input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        .dark-mode-toggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .dark-mode-toggle:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .link-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .link-container a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .link-container a:hover {
+            color: var(--secondary-color);
+        }
+
+        .results-container {
+            margin-top: 20px;
+        }
+    </style>
     <script>
+        function toggleDarkMode() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+            const toggleButton = document.querySelector('.dark-mode-toggle');
+            toggleButton.innerHTML = body.classList.contains('dark-mode') ? '🌙' : '☀️';
+        }
+
         function runSelfTest() {
             fetch('/run_self_test', { method: 'POST' })
                 .then(response => response.json())
                 .then(data => {
                     const resultsDiv = document.getElementById('results');
                     resultsDiv.innerHTML = '<h2>Self-Test Results</h2>';
-
                     data.forEach(group => {
                         let resultTable = `<h3>${group["Multiplexer"]}</h3>`;
                         resultTable += '<table><tr><th>Sensor ID</th><th>Value</th></tr>';
@@ -31,15 +180,27 @@
     </script>
 </head>
 <body>
-    <h1>Self-Test</h1>
-    <button onclick="runSelfTest()">Run Self-Test</button>
-    <div id="results"></div>
-    <form action="/download_self_test" method="post">
-        <label>Download Format:</label>
-        <input type="radio" name="download_format" value="csv" checked> CSV
-        <input type="radio" name="download_format" value="pdf"> PDF
-        <button type="submit">Download Results</button>
-    </form>
-    <a href="/">Go Back</a>
+    <div class="container">
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()">☀️</button>
+        <h1>Self-Test</h1>
+        <button onclick="runSelfTest()">Run Self-Test</button>
+        <div id="results" class="results-container"></div>
+        <div class="form-container">
+            <form action="/download_self_test" method="post">
+                <label>
+                    <input type="radio" id="csv" name="download_format" value="csv" checked>
+                    Download as CSV
+                </label>
+                <label>
+                    <input type="radio" id="pdf" name="download_format" value="pdf">
+                    Download as PDF
+                </label>
+                <button type="submit">Download Results</button>
+            </form>
+        </div>
+        <div class="link-container">
+            <a href="/">Go Back</a>
+        </div>
+    </div>
 </body>
 </html>
