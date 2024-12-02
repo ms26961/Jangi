@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 # Serial connection to Arduino
 try:
-    ser = serial.Serial('/dev/ttyAMA0', 9600)
+    ser = serial.Serial('/dev/ttyACM1', 9600)
     time.sleep(2)
 except serial.SerialException:
     ser = None
