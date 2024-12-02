@@ -18,14 +18,41 @@ except serial.SerialException:
 def get_ldr_values():
     if ser:
         try:
-            ser.write(b'R')  # Send "R" command to Arduino to request LDR data
+            # Send the "R" command to Arduino to request LDR data
+            ser.write(b'R')
+            print("Sent 'R' command to Arduino. Waiting for response...")
+
+            # Read the data from Arduino
             data = ser.readline().decode('utf-8').strip()
-            ldr_values = [int(value) for value in data.split(',') if 1 <= int(value) <= 200]
+            print(f"Raw data received from Arduino: '{data}'")  # Debugging log
+
+            if not data:
+                print("No data received from Arduino.")
+                return []
+
+            # Parse the received data
+            ldr_values = [
+                int(value) for value in data.split(',') 
+                if value.strip().isdigit() and 1 <= int(value) <= 200
+            ]
+            
+            if not ldr_values:
+                print("No valid LDR values received (all were out of range or invalid).")
+                return []
+
+            print(f"Processed LDR values: {ldr_values}")
             return ldr_values
+        except ValueError as e:
+            print(f"ValueError while parsing LDR values: {e}")
+            return []
         except Exception as e:
             print(f"Error reading from Arduino: {e}")
             return []
-    return []
+    else:
+        print("Serial connection not established.")
+        return []
+
+
 
 @app.route('/')
 def index():
