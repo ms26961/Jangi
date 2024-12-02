@@ -18,41 +18,39 @@ except serial.SerialException:
 # Alphanumeric character set for encryption keys
 alphanumeric_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
-# Function to request and read LDR values from Arduino
 def get_ldr_values():
     if ser:
         try:
             ser.write(b'R')  # Send "R" command to Arduino
             print("Sent 'R' command to Arduino. Waiting for response...")
-
-            # Read data from Arduino
             data = ser.readline().decode('utf-8').strip()
-            print(f"Raw data received from Arduino: '{data}'")
+            print(f"Raw data received: '{data}'")
 
             if not data:
                 print("No data received from Arduino.")
                 return []
 
-            # Parse and filter valid LDR values
-            ldr_values = []
-            for value in data.split(','):
-                if value.strip().isdigit():  # Check if it's a valid integer
-                    int_value = int(value.strip())
-                    if 1 <= int_value <= 200:  # Ensure it's within the valid range
-                        ldr_values.append(int_value)
+            # Parse all sensor values (including zeros)
+            ldr_values = [int(value) for value in data.split(',') if value.strip().isdigit()]
 
             if not ldr_values:
                 print("No valid LDR values received.")
                 return []
 
-            print(f"Processed LDR values: {ldr_values}")
-            return ldr_values
+            print(f"Processed LDR values (including zeros): {ldr_values}")
+
+            # Optionally, filter out zeros for further processing
+            valid_values = [value for value in ldr_values if value > 0]
+            print(f"Valid LDR values (non-zero): {valid_values}")
+
+            return ldr_values  # Return all values (or valid_values if filtering is preferred)
         except Exception as e:
             print(f"Error reading from Arduino: {e}")
             return []
     else:
         print("Serial connection not established.")
         return []
+
 
 # Function to generate a 32-character encryption key
 def generate_encryption_key(ldr_values):
