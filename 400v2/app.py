@@ -22,14 +22,37 @@ alphanumeric_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 def get_ldr_values():
     if ser:
         try:
-            ser.write(b'R')  # Send "R" command to Arduino to request LDR data
+            ser.write(b'R')  # Send "R" command to Arduino
+            print("Sent 'R' command to Arduino. Waiting for response...")
+
+            # Read data from Arduino
             data = ser.readline().decode('utf-8').strip()
-            ldr_values = [int(value) for value in data.split(',') if 1 <= int(value) <= 200]
+            print(f"Raw data received from Arduino: '{data}'")
+
+            if not data:
+                print("No data received from Arduino.")
+                return []
+
+            # Parse and filter valid LDR values
+            ldr_values = []
+            for value in data.split(','):
+                if value.strip().isdigit():  # Check if it's a valid integer
+                    int_value = int(value.strip())
+                    if 1 <= int_value <= 200:  # Ensure it's within the valid range
+                        ldr_values.append(int_value)
+
+            if not ldr_values:
+                print("No valid LDR values received.")
+                return []
+
+            print(f"Processed LDR values: {ldr_values}")
             return ldr_values
         except Exception as e:
             print(f"Error reading from Arduino: {e}")
-            return None
-    return None
+            return []
+    else:
+        print("Serial connection not established.")
+        return []
 
 # Function to generate a 32-character encryption key
 def generate_encryption_key(ldr_values):
